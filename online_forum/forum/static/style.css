@@ -1,0 +1,13 @@
+body {
+  background-color: #12161d;
+  color: white;
+}
+
+.custom-navbar {
+  background-color: #12161d;
+  color: white;
+}
+
+.navbar-custom-border {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+}
