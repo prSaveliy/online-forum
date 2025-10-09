@@ -11,3 +11,21 @@ body {
 .navbar-custom-border {
   border-bottom: 1px solid rgba(255, 255, 255, 0.3);
 }
+
+.comment {
+  padding:10px;
+}
+
+.comment:nth-child(even) {
+  background:#3e4553;
+}
+
+.comment:nth-child(odd) {
+  background: #2f343d;
+}
+
+.comment .info {
+  font-weight:bold;
+  font-size:12px;
+  color:#ffffff;
+}
