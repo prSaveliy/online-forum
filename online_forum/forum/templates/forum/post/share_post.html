@@ -1,0 +1,28 @@
+{% extends "forum/base.html" %}
+
+{% block content %}
+  {% if sent %}
+    <h1 class="text-2xl font-bold mb-4 text-white">Email has been successfully sent</h1>
+  {% else %}
+    <h1 class="text-2xl font-bold mb-4 text-white">Share "{{ post.title }}" via Email</h1>
+    <div class="flex justify-start">
+    <form class="max-w-sm w-full" method="post" action="{% url "forum:share_post" post.id %}">
+      {% csrf_token %}
+      <label for="id_name" class="block mb-2 text-sm font-medium text-gray-300">Name</label>
+      {{ form.name }}
+
+      <label for="id_email" class="block mb-2 text-sm font-medium text-gray-300 mt-4">Email</label>
+      {{ form.email }}
+
+      <label for="id_name" class="block mb-2 text-sm font-medium text-gray-300">Email</label>
+      {{ form.to }}
+
+      <label for="id_body" class="block mb-2 text-sm font-medium text-gray-300 mt-4">Comment</label>
+      {{ form.comment }}
+
+      <button type="submit" class="custom-button mt-3 px-3 py-1.5 bg-gray-700 hover:bg-gray-600 text-white text-sm font-medium rounded-lg border-2 border-gray-600 hover:border-gray-500 transition-all duration-200 hover:scale-105 active:scale-95 hover:shadow-lg hover:shadow-gray-500/50 focus:ring-4 focus:ring-gray-500/50 focus:outline-none mb-4">Submit</button>
+
+    </form>
+  </div>
+  {% endif %}
+{% endblock content %}
