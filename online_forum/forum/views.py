@@ -2,17 +2,31 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.http import require_POST
 from django.core.mail import send_mail
 
+from taggit.models import Tag
+
 from .models import Post
 from .forms import CommentForm, SharePostForm
 
 
-def post_feed(request):
-    posts = Post.objects.all()
+def post_feed(request, tag_slug=None):
+    tag = None
+    posts = None
+
+    if tag_slug:
+        tag = get_object_or_404(
+            Tag,
+            slug=tag_slug
+        )
+        posts = Post.objects.filter(tags__in=[tag])
+    else:
+        posts = Post.objects.all()
+
     return render(
         request,
         'forum/post/post_feed.html',
         {
-            'posts': posts
+            'posts': posts,
+            'tag': tag
         }
     )
 
@@ -34,7 +48,7 @@ def post_detail(request, year, month, day, slug):
         {
             'post': post,
             'comments': comments,
-            'form': form
+            'form': form,
         }
     )
 

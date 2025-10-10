@@ -2,6 +2,8 @@ from django.db import models
 from django.conf import settings
 from django.urls import reverse
 
+from taggit.managers import TaggableManager
+
 class Post(models.Model):
     title = models.CharField(max_length=200)
     slug = models.SlugField(
@@ -16,6 +18,8 @@ class Post(models.Model):
     )
     created = models.DateTimeField(auto_now_add=True)
     edited = models.DateTimeField(auto_now=True)
+
+    tags = TaggableManager()
 
     class Meta:
         ordering = ['-created']
