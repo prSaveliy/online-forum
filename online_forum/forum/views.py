@@ -108,9 +108,9 @@ def share_post(request, post_id):
             Share.objects.create(post=post)
 
     # handle number of shares
-    gt_100 = False
-    if post.share.count() > 100:
-        gt_100 = True
+    gt_99 = False
+    if post.share.count() > 99:
+        gt_99 = True
             
     else:
         form = SharePostForm()
@@ -122,7 +122,7 @@ def share_post(request, post_id):
             'post': post,
             'sent': sent,
             'form': form,
-            'gt_100': gt_100
+            'gt_99': gt_99
         }
 
     )
