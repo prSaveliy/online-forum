@@ -4,7 +4,7 @@ from django.core.mail import send_mail
 
 from taggit.models import Tag
 
-from .models import Post
+from .models import Post, Share
 from .forms import CommentForm, SharePostForm
 
 
@@ -104,8 +104,14 @@ def share_post(request, post_id):
                     cd['to']
                 ]
             )
-
             sent = True
+            Share.objects.create(post=post)
+
+    # handle number of shares
+    gt_100 = False
+    if post.share.count() > 100:
+        gt_100 = True
+            
     else:
         form = SharePostForm()
 
@@ -115,7 +121,8 @@ def share_post(request, post_id):
         {
             'post': post,
             'sent': sent,
-            'form': form
+            'form': form,
+            'gt_100': gt_100
         }
 
     )
