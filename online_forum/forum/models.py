@@ -1,6 +1,7 @@
 from django.db import models
 from django.conf import settings
 from django.urls import reverse
+from django.contrib.auth.models import User
 
 from taggit.managers import TaggableManager
 
@@ -69,4 +70,16 @@ class Share(models.Model):
         Post,
         on_delete=models.CASCADE,
         related_name="share"
+    )
+
+class Like(models.Model):
+    post = models.ForeignKey(
+        Post,
+        on_delete=models.CASCADE,
+        related_name="likes"
+    )
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="likes"
     )

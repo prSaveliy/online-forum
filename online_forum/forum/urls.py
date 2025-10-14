@@ -9,5 +9,7 @@ urlpatterns = [
     path('tag/<slug:tag_slug>/', views.post_feed, name='post_feed_by_slug'),
     path('<int:year>/<int:month>/<int:day>/<slug:slug>', views.post_detail, name='post_detail'),
     path('<int:post_id>/comment/', views.post_comment, name='post_comment'),
-    path('<int:post_id>/', views.share_post, name='share_post')
+    path('<int:post_id>/', views.share_post, name='share_post'),
+    path('<int:year>/<int:month>/<int:day>/<slug:slug>/like', views.handle_like_pressed, name='handle_like_pressed'),
+    path('<int:year>/<int:month>/<int:day>/<slug:slug>/unlike', views.handle_like_unpressed, name='handle_like_unpressed')
 ]

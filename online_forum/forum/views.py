@@ -4,7 +4,7 @@ from django.core.mail import send_mail
 
 from taggit.models import Tag
 
-from .models import Post, Share
+from .models import Post, Share, Like
 from .forms import CommentForm, SharePostForm
 
 
@@ -41,6 +41,7 @@ def post_detail(request, year, month, day, slug):
 
     comments = post.comments.all()
     form = CommentForm()
+    pressed = False
 
     return render(
         request,
@@ -49,6 +50,7 @@ def post_detail(request, year, month, day, slug):
             'post': post,
             'comments': comments,
             'form': form,
+            'pressed': pressed
         }
     )
 
@@ -108,9 +110,14 @@ def share_post(request, post_id):
             Share.objects.create(post=post)
 
     # handle number of shares
-    gt_99 = False
+    shares_gt_99 = False
     if post.share.count() > 99:
-        gt_99 = True
+        shares_gt_99 = True
+
+    # handle number of comments
+    comms_gt_99 = False
+    if post.comments.count() > 99:
+        comms_gt_99 = True
             
     else:
         form = SharePostForm()
@@ -122,7 +129,61 @@ def share_post(request, post_id):
             'post': post,
             'sent': sent,
             'form': form,
-            'gt_99': gt_99
+            'shares_gt_99': shares_gt_99,
+            'comms_gt_99': comms_gt_99
         }
 
     )
+
+def handle_like_pressed(request, year, month, day, slug):
+    post = get_object_or_404(
+        Post,
+        created__year=year,
+        created__month=month,
+        created__day=day,
+        slug=slug
+    )
+
+    Like.objects.create(post=post)
+    pressed = True
+    comments = post.comments.all()
+    form = CommentForm()
+
+    return render(
+        request,
+        'forum/post/post_detail.html',
+        {
+            'pressed': pressed,
+            'post': post,
+            'comments': comments,
+            'form': form
+        }
+    )
+
+def handle_like_unpressed(request, year, month, day, slug):
+    post = get_object_or_404(
+        Post,
+        created__year=year,
+        created__month=month,
+        created__day=day,
+        slug=slug
+    )
+
+    num_likes = post.likes.count()
+    Like.objects.get(id=num_likes).delete()
+    pressed = False
+    comments = post.comments.all()
+    form = CommentForm()
+
+    return render(
+        request,
+        'forum/post/post_detail.html',
+        {
+            'pressed': pressed,
+            'post': post,
+            'comments': comments,
+            'form': form
+        }
+    )
+
+# add User model

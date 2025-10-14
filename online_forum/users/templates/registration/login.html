@@ -1,0 +1,62 @@
+{% extends "forum/base.html" %}
+
+{% block content %}
+  <div class="flex justify-center">
+    <h2 class="mt-10 text-center text-2xl/9 font-bold tracking-tight text-white">Log in to your account</h2>
+  </div>
+
+  <div class="flex justify-center">
+    {% if form.non_field_errors %}
+      <div class="max-w-md p-4 mt-4 text-sm text-red-300 bg-red-900/50 border border-red-700 rounded-lg">
+        {{ form.non_field_errors }}
+      </div>
+    {% endif %}
+  </div>
+  
+  <div class="flex justify-center">
+      <form method="post" action="{% url "users:login" %}" class="space-y-6">
+        {% csrf_token %}
+
+        <div>
+          <label for="id_username" class="block mb-2 text-sm font-medium text-gray-300">
+            Username
+          </label>
+          <div class="mt-2">
+            <input
+              type="text"
+              name="username"
+              id="id_username"
+              required
+              class="block max-w-md pl-3 pr-24 py-2 text-sm text-gray-400 border border-gray-600 rounded-lg bg-gray-800/50 placeholder-gray-400 transition-all duration-200 hover:shadow-md hover:shadow-gray-500/50 focus:ring-1 focus:ring-gray-500/50 focus:outline-none"
+              placeholder="Enter your username"
+            />
+          </div>
+        </div>
+
+        <div class="mt-3">
+          <label for="id_password" class="block mb-2 text-sm font-medium text-gray-300">
+          Password
+        </label>
+        <div class="mt-2">
+          <input
+            type="password"
+            name="password"
+            id="id_password"
+            required
+            class="block max-w-md pl-3 pr-24 py-2 text-sm text-gray-400 border border-gray-600 rounded-lg bg-gray-800/50 placeholder-gray-400 transition-all duration-200 hover:shadow-md hover:shadow-gray-500/50 focus:ring-1 focus:ring-gray-500/50 focus:outline-none"
+            placeholder="Enter your password"
+          />
+        </div>
+      </div>
+
+      <div>
+        <button type="submit"
+          class="flex max-w-md justify-center rounded-md bg-indigo-500 px-3 py-1.5 text-sm font-semibold text-white hover:bg-indigo-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">
+          Log in
+        </button>
+      </div>
+
+      <input type="hidden" name="next" value="{% url "forum:post_feed" %}" />
+    </form>
+  </div>
+{% endblock content %}

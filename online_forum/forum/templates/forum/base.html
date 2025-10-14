@@ -72,9 +72,18 @@
             <li>
               <a href="#" class="block rounded-md px-3 py-2 text-sm text-gray-300 hover:bg-white/5 hover:text-white">Documents</a>
             </li>
-            <li>
-              <a href="#" class="block rounded-md px-3 py-2 text-sm text-gray-300 hover:bg-white/5 hover:text-white">Reports</a>
-            </li>
+            {% if not user.is_authenticated %}
+              <li>
+                <a href="{% url "users:login" %}" class="block rounded-md px-3 py-2 text-sm text-gray-300 hover:bg-white/5 hover:text-white">Log In</a>
+              </li>
+              <li>
+                <a href="{% url "users:register" %}" class="block rounded-md px-3 py-2 text-sm text-gray-300 hover:bg-white/5 hover:text-white">Register</a>
+              </li>
+            {% else %}
+              <li>
+                <a href="{% url "users:logging_out" %}" class="block rounded-md px-3 py-2 text-sm text-gray-300 hover:bg-white/5 hover:text-white">Log Out</a>
+              </li>
+            {% endif %}
           </ul>
 
           <div class="mt-6 pt-4 border-t border-white/10 ">
