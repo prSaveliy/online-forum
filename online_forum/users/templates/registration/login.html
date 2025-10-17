@@ -59,4 +59,11 @@
       <input type="hidden" name="next" value="{% url "forum:post_feed" %}" />
     </form>
   </div>
+
+  <div class="flex justify-center">
+    <p class="mt-10 text-center text-sm/6 text-gray-400">
+      Don't have an account?
+      <a href="{% url "users:register" %}" class="font-semibold text-indigo-400 hover:text-indigo-300">Register</a>
+    </p>
+  </div>
 {% endblock content %}

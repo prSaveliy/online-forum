@@ -13,15 +13,13 @@ body {
 }
 
 .comment {
-  padding:10px;
+  padding:10px !important;
 }
 
 .comment:nth-child(even) {
-  background:#3e4553;
 }
 
 .comment:nth-child(odd) {
-  background: #2f343d;
 }
 
 .comment .info {

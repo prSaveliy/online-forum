@@ -6,6 +6,13 @@ from django.contrib.auth.models import User
 from taggit.managers import TaggableManager
 
 class Post(models.Model):
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='posts',
+        default=1
+    )
+
     title = models.CharField(max_length=200)
     slug = models.SlugField(
         max_length=200,
@@ -43,6 +50,13 @@ class Post(models.Model):
         )
     
 class Comment(models.Model):
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='comments',
+        default=1
+    )
+
     post = models.ForeignKey(
         Post,
         on_delete=models.CASCADE,
@@ -72,7 +86,7 @@ class Share(models.Model):
         related_name="share"
     )
 
-class Like(models.Model):
+class LikePost(models.Model):
     post = models.ForeignKey(
         Post,
         on_delete=models.CASCADE,
@@ -83,3 +97,18 @@ class Like(models.Model):
         on_delete=models.CASCADE,
         related_name="likes"
     )
+
+class LikeComment(models.Model):
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="comment_likes"
+    )
+    comment = models.ForeignKey(
+        Comment,
+        on_delete=models.CASCADE,
+        related_name="comment_likes"
+    )
+
+    class Meta:
+        unique_together = ('comment', 'user')

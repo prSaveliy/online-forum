@@ -1,10 +1,13 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.http import require_POST
 from django.core.mail import send_mail
+from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.db.models import Count
 
 from taggit.models import Tag
 
-from .models import Post, Share, Like
+from .models import Post, Share, LikePost, LikeComment, Comment
 from .forms import CommentForm, SharePostForm
 
 
@@ -17,9 +20,19 @@ def post_feed(request, tag_slug=None):
             Tag,
             slug=tag_slug
         )
-        posts = Post.objects.filter(tags__in=[tag])
+        post_list = Post.objects.filter(tags__in=[tag])
     else:
-        posts = Post.objects.all()
+        post_list = Post.objects.all()
+    
+    paginator = Paginator(post_list, 5)
+    page_number = request.GET.get('page', 1)
+
+    try:
+        posts = paginator.page(page_number)
+    except PageNotAnInteger:
+        posts = paginator.page(1)
+    except EmptyPage:
+        posts = paginator.page(paginator.num_pages)
 
     return render(
         request,
@@ -39,9 +52,39 @@ def post_detail(request, year, month, day, slug):
         slug=slug
     )
 
-    comments = post.comments.all()
     form = CommentForm()
-    pressed = False
+
+    comment_list = post.comments.annotate(
+        num_likes=Count('comment_likes')
+    ).order_by('-num_likes', '-created')
+
+    paginator = Paginator(comment_list, 10)
+    page_number = request.GET.get('page', 1)
+
+    try:
+        comments = paginator.page(page_number)
+    except PageNotAnInteger:
+        comments = paginator.page(1)
+    except EmptyPage:
+        comments = paginator.page(paginator.num_pages)
+
+    # handle number of shares
+    shares_gt_99 = False
+    if post.share.count() > 99:
+        shares_gt_99 = True
+
+    # handle number of comments
+    comms_gt_99 = False
+    if post.comments.count() > 99:
+        comms_gt_99 = True
+
+    # handle post like icon change
+    liked = False
+    if request.user.is_authenticated:
+        if post.likes.filter(post=post, user=request.user).exists():
+            liked = True
+        else:
+            liked = False
 
     return render(
         request,
@@ -50,12 +93,18 @@ def post_detail(request, year, month, day, slug):
             'post': post,
             'comments': comments,
             'form': form,
-            'pressed': pressed
+            'shares_gt_99': shares_gt_99,
+            'comms_gt_99': comms_gt_99,
+            'liked': liked,
+            'comment_list': comment_list
         }
     )
 
 @require_POST
 def post_comment(request, post_id):
+    if not request.user.is_authenticated:
+        return redirect("users:login")
+    
     post = get_object_or_404(
         Post,
         id=post_id
@@ -65,6 +114,7 @@ def post_comment(request, post_id):
     if form.is_valid():
         comment = form.save(commit=False)
         comment.post = post
+        comment.user = request.user
         comment.save()
 
     return redirect(
@@ -76,6 +126,9 @@ def post_comment(request, post_id):
     )
 
 def share_post(request, post_id):
+    if not request.user.is_authenticated:
+        return redirect("users:login")
+    
     post = get_object_or_404(
         Post,
         id=post_id
@@ -91,11 +144,11 @@ def share_post(request, post_id):
                 post.get_absolute_url()
             )
             subject = (
-                f'{cd['name']} recommends you check out "{post.title}" on Forum'
+                f'{request.user.username} recommends you check out "{post.title}" on Forum'
             )
             message = (
                 f'Read and comment "{post.title}" on {post_url}\n\n'
-                f"{cd['name']}'s comment:\n {cd['comment']}"
+                f"{request.user.username}'s comment:\n {cd['comment']}"
             )
 
             send_mail(
@@ -107,18 +160,8 @@ def share_post(request, post_id):
                 ]
             )
             sent = True
-            Share.objects.create(post=post)
-
-    # handle number of shares
-    shares_gt_99 = False
-    if post.share.count() > 99:
-        shares_gt_99 = True
-
-    # handle number of comments
-    comms_gt_99 = False
-    if post.comments.count() > 99:
-        comms_gt_99 = True
-            
+            Share.objects.create(post=post) 
+        
     else:
         form = SharePostForm()
 
@@ -128,62 +171,83 @@ def share_post(request, post_id):
         {
             'post': post,
             'sent': sent,
-            'form': form,
-            'shares_gt_99': shares_gt_99,
-            'comms_gt_99': comms_gt_99
-        }
-
-    )
-
-def handle_like_pressed(request, year, month, day, slug):
-    post = get_object_or_404(
-        Post,
-        created__year=year,
-        created__month=month,
-        created__day=day,
-        slug=slug
-    )
-
-    Like.objects.create(post=post)
-    pressed = True
-    comments = post.comments.all()
-    form = CommentForm()
-
-    return render(
-        request,
-        'forum/post/post_detail.html',
-        {
-            'pressed': pressed,
-            'post': post,
-            'comments': comments,
             'form': form
         }
+
     )
 
-def handle_like_unpressed(request, year, month, day, slug):
+def handle_likes(request, post_id):
+    if not request.user.is_authenticated:
+        return redirect("users:login")
+
     post = get_object_or_404(
         Post,
-        created__year=year,
-        created__month=month,
-        created__day=day,
-        slug=slug
+        id=post_id
     )
 
-    num_likes = post.likes.count()
-    Like.objects.get(id=num_likes).delete()
-    pressed = False
-    comments = post.comments.all()
-    form = CommentForm()
+    like, created = LikePost.objects.get_or_create(post=post, user=request.user)
 
-    return render(
-        request,
-        'forum/post/post_detail.html',
-        {
-            'pressed': pressed,
-            'post': post,
-            'comments': comments,
-            'form': form
-        }
+    if not created:
+        like.delete()
+
+    return redirect(
+        'forum:post_detail',
+        year=post.created.year,
+        month=post.created.month,
+        day=post.created.day,
+        slug=post.slug
     )
 
-# add User model
+def handle_comment_likes(request, post_id, comment_id):
+    if not request.user.is_authenticated:
+        return redirect("users:login")
+
+    post = get_object_or_404(
+        Post,
+        id=post_id
+    )
+    comment = get_object_or_404(
+        Comment,
+        post=post,
+        id=comment_id
+    )
+
+    like, created = LikeComment.objects.get_or_create(comment=comment, user=request.user)
+
+    if not created:
+        like.delete()
+
+    page_number = request.GET.get('page', 1)
+    year=post.created.year
+    month=post.created.month
+    day=post.created.day
+    slug=post.slug
+    
+    if page_number == '1':
+        return redirect(
+            f'/{year}/{month}/{day}/{slug}'
+        )
+    else:
+        return redirect(
+            f'/{year}/{month}/{day}/{slug}?page={page_number}'
+        )
+
+def handle_likes_home_page(request, post_id):
+    if not request.user.is_authenticated:
+        return redirect("users:login")
+
+    post = get_object_or_404(
+        Post,
+        id=post_id
+    )
+
+    like, created = LikePost.objects.get_or_create(post=post, user=request.user)
+
+    if not created:
+        like.delete()
+
+    page_number = request.GET.get('page', 1)
+
+    return redirect(
+        f"/?page={page_number}"
+    )
