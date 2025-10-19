@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 
 from taggit.managers import TaggableManager
 
+
 class Post(models.Model):
     user = models.ForeignKey(
         User,
@@ -16,7 +17,8 @@ class Post(models.Model):
     title = models.CharField(max_length=200)
     slug = models.SlugField(
         max_length=200,
-        unique_for_date='created'
+        unique_for_date='created',
+        blank=True
     )
     content = models.TextField()
     author = models.ForeignKey(
@@ -27,7 +29,7 @@ class Post(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     edited = models.DateTimeField(auto_now=True)
 
-    tags = TaggableManager()
+    tags = TaggableManager(blank=True)
 
     class Meta:
         ordering = ['-created']

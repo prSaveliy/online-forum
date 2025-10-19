@@ -5,7 +5,7 @@
 {% block content %}
   <div class="container">
     <div class="flex justify-between items-center mb-1 mt-3">
-      <h1 class="h1 font-bold tracking-tight text-white">{{ post.title }}</h1>
+      <h1 class="h1 font-bold tracking-tight text-white break-all">{{ post.title }}</h1>
     </div>
 
     <div class="text-sm text-gray-600 dark:text-gray-400 mb-3">
@@ -16,9 +16,9 @@
       {% endfor %}
     </div>
 
-    <div>
+    <div class="break-all">
       <h6 class="h6 italic font-extralight dark:text-gray-50/30">
-        <p>{{ post.user }} • {{ post|timepassed }}</p>
+        <p><a class="dark:hover:text-indigo-500 transition-colors" href="{% url "forum:profile_page" post.user.id %}">{{ post.user }}</a> • {{ post|timepassed }}</p>
       </h6>
         <p>{{ post.content|linebreaks }}</p>
     
@@ -96,9 +96,21 @@
 
       {% for comment in comments %}
         <div class="comment mb-2 border-t border-white/10">
-          <h6 class="h6 italic font-extralight dark:text-gray-50/30">
-            <p>{{ comment.user }} • {{ comment|timepassed }}</p>
-          </h6>
+          <div class="flex items-center justify-between">
+            <h6 class="h6 italic font-extralight dark:text-gray-50/30">
+              <p><a class="dark:hover:text-indigo-500 transition-colors" href="{% url "forum:profile_page" comment.user.id %}">{{ comment.user }}</a> • {{ comment|timepassed }}</a></p>
+            </h6>
+            {% if request.user == comment.user %}
+              <a class="bg-none active:border-none focus:ring-0 flex items-center focus:outline-none like-button" 
+                rel="noopener" 
+                href="{% url "forum:delete_comment" comment.id %}" 
+                draggable="false">
+                <svg aria-hidden="true" fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-6 h-6 text-gray-300 hover:text-white transition-all">
+                  <path fill-rule="evenodd" d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708"></path>
+                </svg>
+              </a>
+            {% endif %}
+          </div>
           {{ comment.body|linebreaks }}
           <div class="flex mt-3">
             {% if comment|like_exists:request.user %}

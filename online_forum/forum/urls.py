@@ -13,4 +13,10 @@ urlpatterns = [
     path('<int:post_id>/like/', views.handle_likes, name='handle_likes'),
     path('<int:post_id>/<int:comment_id>/like_comment/', views.handle_comment_likes, name='handle_comment_likes'),
     path('home/<int:post_id>/like/', views.handle_likes_home_page, name='handle_likes_home_page'),
+    path('profile/<int:user_id>/', views.profile_page, name='profile_page'),
+    path('profile/<int:post_id>/like', views.handle_likes_profile, name='handle_likes_profile'),
+    path('create_post/', views.create_post, name='create_post'),
+    path('delete_post/<int:post_id>/', views.delete_post, name='delete_post'),
+    path('delete_comment/<int:comment_id>/', views.delete_comment, name='delete_comment'),
+    path('search/', views.search, name='search')
 ]

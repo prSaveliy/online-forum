@@ -1,5 +1,10 @@
 from django import template
 from datetime import datetime
+from django.db.models import Count
+
+from taggit.models import Tag
+
+from forum.models import Post
 
 
 register = template.Library()
@@ -52,3 +57,33 @@ def check_like_exists_post(post, request_user):
         if post.likes.filter(user=request_user).exists():
             return True
         return False
+    
+@register.simple_tag
+def get_most_popular_tags(max=3):
+    return Tag.objects.annotate(
+        posts=Count('taggit_taggeditem_items')
+    ).order_by('-posts')[:max]
+
+@register.filter(name='count_posts_tagged')
+def count_posts_tagged_by_tag(tag):
+    return tag.posts
+
+@register.simple_tag
+def get_most_liked_posts(max=3):
+    return Post.objects.annotate(
+        num_likes=Count('likes')
+    ).order_by('-num_likes')[:max]
+
+@register.filter(name='count_likes_post')
+def count_likes_on_post(post):
+    return post.likes.count()
+    
+@register.simple_tag
+def get_most_commented_posts(max=3):
+    return Post.objects.annotate(
+        num_comments=Count('comments')
+    ).order_by('-num_comments')[:max]
+
+@register.filter(name='count_comments_post')
+def count_comments_on_post(post):
+    return post.comments.count()

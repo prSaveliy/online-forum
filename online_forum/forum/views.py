@@ -4,11 +4,17 @@ from django.core.mail import send_mail
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Count
+from django.utils.text import slugify
+from django.contrib.postgres.search import (
+    SearchQuery,
+    SearchVector,
+    SearchRank
+)
 
 from taggit.models import Tag
 
-from .models import Post, Share, LikePost, LikeComment, Comment
-from .forms import CommentForm, SharePostForm
+from .models import Post, Share, LikePost, LikeComment, Comment, User
+from .forms import CommentForm, SharePostForm, PostCreationForm
 
 
 def post_feed(request, tag_slug=None):
@@ -250,4 +256,140 @@ def handle_likes_home_page(request, post_id):
 
     return redirect(
         f"/?page={page_number}"
+    )
+
+def profile_page(request, user_id):
+    user = get_object_or_404(
+        User,
+        id=user_id
+    )
+    post_list = user.posts.filter(user=user)
+    total_likes = 0
+    for post in post_list:
+        total_likes += post.likes.count()
+
+    paginator = Paginator(post_list, 5)
+    page_number = request.GET.get('page', 1)
+
+    try:
+        posts = paginator.page(page_number)
+    except PageNotAnInteger:
+        posts = paginator.page(1)
+    except EmptyPage:
+        posts = paginator.page(paginator.num_pages)
+
+    return render(
+        request,
+        'forum/profile/profile_page.html',
+        {
+            'total_likes': total_likes,
+            'posts': posts,
+            'user': user
+        }
+    )
+
+def handle_likes_profile(request, post_id):
+    if not request.user.is_authenticated:
+        return redirect("users:login")
+
+    post = get_object_or_404(
+        Post,
+        id=post_id
+    )
+
+    like, created = LikePost.objects.get_or_create(post=post, user=request.user)
+
+    if not created:
+        like.delete()
+
+    page_number = request.GET.get('page', 1)
+
+    return redirect(
+        f"/profile/{request.user.id}/?page={page_number}"
+    )
+
+def title_slugify(title):
+    slug = slugify(title)
+    unique_slug = slug
+    counter = 1
+
+    while Post.objects.filter(slug=unique_slug).exists():
+        unique_slug = f'{slug}-{counter}'
+        counter += 1
+    return unique_slug
+
+def create_post(request):
+    if not request.user.is_authenticated:
+        return redirect("users:login")
+    
+    if request.method == "POST":
+        form = PostCreationForm(request.POST)
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.slug = title_slugify(form.cleaned_data['title'])
+            post.user = request.user
+            post.author = request.user
+            post.save()
+            form.save_m2m()
+
+            return redirect("forum:profile_page", request.user.id)
+    else:
+        form = PostCreationForm()
+
+    return render(
+        request,
+        'forum/post/create_post.html',
+        {
+            'form': form
+        }
+    )
+
+def delete_post(request, post_id):
+    if request.user.is_authenticated:
+        post = get_object_or_404(
+            Post,
+            id=post_id
+        )
+        if request.user == post.user:
+            post.delete()
+
+    return redirect("forum:profile_page", post.user.id)
+
+def delete_comment(request, comment_id):
+    if request.user.is_authenticated:
+        comment = get_object_or_404(
+            Comment,
+            id=comment_id
+        )
+        post = comment.post
+        if request.user == comment.user:
+            comment.delete()
+
+    return redirect(
+        "forum:post_detail",
+        year=post.created.year,
+        month=post.created.month,
+        day=post.created.day,
+        slug=post.slug
+    )
+
+def search(request):
+    query = request.GET.get('q')
+    results = []
+
+    if query:
+        search_vector = SearchVector('title', 'content')
+        search_query = SearchQuery(query)
+        results = Post.objects.annotate(
+            search=search_vector,
+            rank=SearchRank(search_vector, search_query)
+        ).filter(search=search_query).order_by('-rank')
+
+    return render(
+        request,
+        'forum/post/search.html',
+        {
+            'results': results,
+            'query': query
+        }
     )

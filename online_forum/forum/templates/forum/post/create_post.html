@@ -1,0 +1,25 @@
+{% extends "forum/base.html" %}
+
+{% block content %}
+  <div class="flex justify-center">
+    <h2 class="mt-10 text-center text-2xl/9 font-bold tracking-tight text-white">Create a post</h2>
+  </div>
+
+  <div class="flex justify-center">
+    <form class="max-w-sm w-full mt-4" method="post" action="{% url "forum:create_post" %}">
+      {% csrf_token %}
+
+      <label for="id_title" class="block mb-2 text-sm font-medium text-gray-300">Title</label>
+      {{ form.title }}
+
+      <label for="id_content" class="block mb-2 mt-3 text-sm font-medium text-gray-300">Content</label>
+      {{ form.content }}
+
+      <label for="id_tags" class="block mb-2 mt-3 text-sm font-medium text-gray-300">Tags</label>
+      {{ form.tags }}
+
+      <button type="submit" class="flex max-w-md mt-4 mb-10 justify-center rounded-md bg-indigo-500 px-3 py-1.5 text-sm font-semibold text-white hover:bg-indigo-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500" onclick="this.disabled = true; this.form.submit();">Create</button>
+      
+    </form>
+  </div>
+{% endblock content %}
