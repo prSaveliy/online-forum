@@ -2,6 +2,8 @@
 {% load static %}
 {% load forum_tags %}
 
+{% block title %}{{ post.title }}{% endblock title %}
+
 {% block content %}
   <div class="container px-3">
     {% if not post.tags.all %}
