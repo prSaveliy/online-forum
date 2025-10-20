@@ -5,11 +5,12 @@
 {% block title %}{{ user.username }}{% endblock title %}
 
 {% block content %}
-  <div class="relative container mx-auto px-3 mt-3 flex">
+  <div class="container mx-auto px-3 mt-3 flex flex-col items-center sm:flex-row sm:items-start sm:space-x-6">
     <div>
-      <img class="h-32 w-32 object-fill bg-gray-800 p-6 rounded-lg" src="{% static "images/user.webp" %}" />
+      <img class="h-32 w-32 object-fill bg-gray-800 p-6 rounded-lg" src="{% static 'images/user.webp' %}" />
     </div>
-    <div class="absolute left-1/2 transform -translate-x-1/2">
+
+    <div class="text-center sm:text-left mt-4 sm:mt-0">
       <p class="text-base mb-2">username: {{ user.username }}</p>
       <p class="text-base mb-2">joined: {{ user.date_joined|date:"Y/m/d" }}</p>
       <p class="text-base mb-2">posts: {{ user.posts.count }}</p>

@@ -17,7 +17,7 @@
         <div class="flex h-16 items-center justify-center">
           
           <!-- search form -->
-          <form action="{% url "forum:search" %}" method="get" class="w-full max-w-md mx-auto">
+          <form action="{% url "forum:search" %}" method="get" class="w-full sm:max-w-md mx-auto px-2">
             {% csrf_token %}
             <div class="relative">
               <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none z-10">
@@ -41,9 +41,40 @@
     </nav>
 
     <main role="main" class="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
-      <div class="flex gap-6">
+
+      <button id="menu-toggle"
+        class="absolute left-3 top-1/2 -translate-y-1/2 block lg:hidden text-gray-300 hover:text-white p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+
+      <!-- mobile menu -->
+      <div id="mobile-menu" class="lg:hidden hidden fixed inset-0 bg-gray-900/95 z-50 overflow-y-auto">
+        <div class="p-6 space-y-4 border-b border-white/10">
+          <button id="close-menu" class="text-gray-300 hover:text-white mb-4">✕ Close</button>
+
+          <h3 class="text-lg font-medium text-gray-300 mb-3">Navigation</h3>
+          <ul class="space-y-2">
+            <li><a href="{% url 'forum:post_feed' %}" class="block rounded-md px-3 py-2 text-sm text-gray-300 hover:bg-white/5 hover:text-white">Home</a></li>
+            {% if request.user.is_authenticated %}
+            <li><a href="{% url "forum:profile_page" request.user.id %}" class="block rounded-md px-3 py-2 text-sm text-gray-300 hover:bg-white/5 hover:text-white">Profile</a></li>
+            {% endif %}
+            
+            {% if not request.user.is_authenticated %}
+              <li><a href="{% url "users:login" %}" class="block rounded-md px-3 py-2 text-sm text-gray-300 hover:bg-white/5 hover:text-white">Log In</a></li>
+              <li><a href="{% url "users:register" %}" class="block rounded-md px-3 py-2 text-sm text-gray-300 hover:bg-white/5 hover:text-white">Register</a></li>
+            {% else %}
+              <li><a href="{% url "users:logging_out" %}" class="block rounded-md px-3 py-2 text-sm text-gray-300 hover:bg-white/5 hover:text-white">Log Out</a></li>
+            {% endif %}
+            <li><a href="{% url "forum:create_post" %}" class="block rounded-md px-3 py-2 text-sm text-gray-300 hover:bg-white/5 hover:text-white">+ Create</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="flex flex-col lg:flex-row gap-6">
         <!-- Left Sidebar -->
-        <aside class="w-64 bg-gray-800/50 p-4 hover:shadow-[0_10px_20px_rgba(250,250,250,0.2)] transition duration-300 ease-in-out">
+        <aside class="hidden lg:block w-64 bg-gray-800/50 p-4 hover:shadow-[0_10px_20px_rgba(250,250,250,0.2)] transition duration-300 ease-in-out">
           <h3 class="text-lg font-medium text-gray-300 mb-3 px-3">Navigation</h3>
           <ul class="space-y-2 px-3">
             <li>
@@ -91,12 +122,12 @@
         </aside>
 
         <!-- Main Content -->
-        <div class="flex-1 bg-gray-800/50 p-6 hover:shadow-[0_10px_20px_rgba(250,250,250,0.2)] transition duration-300 ease-in-out">
+        <div class="flex-1 w-full bg-gray-800/50 p-6 hover:shadow-[0_10px_20px_rgba(250,250,250,0.2)] transition duration-300 ease-in-out">
           {% block content %}{% endblock content %}
         </div>
 
         <!-- Right Sidebar -->
-        <aside class="w-64 bg-gray-800/50 p-4 hover:shadow-[0_10px_20px_rgba(250,250,250,0.2)] transition duration-300 ease-in-out">
+        <aside class="hidden lg:block w-64 bg-gray-800/50 p-4 hover:shadow-[0_10px_20px_rgba(250,250,250,0.2)] transition duration-300 ease-in-out">
           <h3 class="text-lg font-medium text-gray-300 mb-3 px-3">Most liked posts</h3>
           {% get_most_liked_posts as posts %}
           <div class="space-y-3">
@@ -147,6 +178,19 @@
           window.scrollTo(0, parseInt(scrollY));
           localStorage.removeItem("scrollY");
         }
+      });
+    </script>
+    <script>
+      const menuToggle = document.getElementById('menu-toggle');
+      const mobileMenu = document.getElementById('mobile-menu');
+      const closeMenu = document.getElementById('close-menu');
+
+      menuToggle.addEventListener('click', () => {
+        mobileMenu.classList.toggle('hidden');
+      });
+
+      closeMenu.addEventListener('click', () => {
+        mobileMenu.classList.add('hidden');
       });
     </script>
   </body>
