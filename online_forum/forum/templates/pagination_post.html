@@ -29,12 +29,12 @@
     <!-- Buttons -->
     <div class="inline-flex mt-2 xs:mt-0">
       {% if page.has_previous %}
-        <button class="flex items-center justify-center px-4 h-10 text-base font-medium text-white bg-gray-800 rounded-s hover:bg-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"  onclick="window.location.href='?page={{ page.previous_page_number }}'">
+        <button class="flex items-center justify-center px-4 h-10 text-base font-medium text-white bg-gray-800 rounded-s hover:bg-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"  onclick="window.location.href='?q={{ query }}&page={{ page.previous_page_number }}'">
             Prev
         </button>
       {% endif %}
       {% if page.has_next %}
-        <button class="flex items-center justify-center px-4 h-10 text-base font-medium text-white bg-gray-800 border-0 border-s border-gray-700 rounded-e hover:bg-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"  onclick="window.location.href='?page={{ page.next_page_number }}'">
+        <button class="flex items-center justify-center px-4 h-10 text-base font-medium text-white bg-gray-800 border-0 border-s border-gray-700 rounded-e hover:bg-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"  onclick="window.location.href='?q={{ query }}&page={{ page.next_page_number }}'">
             Next
         </button>
       {% endif %}

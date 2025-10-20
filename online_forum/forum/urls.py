@@ -18,5 +18,6 @@ urlpatterns = [
     path('create_post/', views.create_post, name='create_post'),
     path('delete_post/<int:post_id>/', views.delete_post, name='delete_post'),
     path('delete_comment/<int:comment_id>/', views.delete_comment, name='delete_comment'),
-    path('search/', views.search, name='search')
+    path('search/', views.search, name='search'),
+    path('search/<int:post_id>/like', views.handle_likes_search, name='handle_likes_search')
 ]

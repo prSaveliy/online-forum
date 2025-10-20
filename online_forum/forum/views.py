@@ -1,7 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.http import require_POST
 from django.core.mail import send_mail
-from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Count
 from django.utils.text import slugify
@@ -385,11 +384,42 @@ def search(request):
             rank=SearchRank(search_vector, search_query)
         ).filter(search=search_query).order_by('-rank')
 
+    paginator = Paginator(results, 5)
+    page_number = request.GET.get('page', 1)
+
+    try:
+        posts = paginator.page(page_number)
+    except PageNotAnInteger:
+        posts = paginator.page(1)
+    except EmptyPage:
+        posts = paginator.page(paginator.num_pages)
+
     return render(
         request,
         'forum/post/search.html',
         {
-            'results': results,
+            'posts': posts,
             'query': query
         }
+    )
+
+def handle_likes_search(request, post_id):
+    if not request.user.is_authenticated:
+        return redirect("users:login")
+
+    post = get_object_or_404(
+        Post,
+        id=post_id
+    )
+
+    like, created = LikePost.objects.get_or_create(post=post, user=request.user)
+
+    if not created:
+        like.delete()
+
+    query = request.GET.get('q')
+    page_number = request.GET.get('page', 1)
+
+    return redirect(
+        f"/search/?q={query}&page={page_number}"
     )

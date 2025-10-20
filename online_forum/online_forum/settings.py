@@ -42,7 +42,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # installed
-    'django_bootstrap5',
     'tailwind',
     'theme',
     'django_browser_reload',

@@ -1,4 +1,3 @@
-  {% load django_bootstrap5 %}
   {% load static tailwind_tags %}
   {% load static %}
   {% load forum_tags %}
@@ -8,9 +7,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}{% endblock title %}</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-    <script src="{% static 'js/preline.js' %}"></script>
     {% tailwind_css %}
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="{% static 'style.css' %}">
@@ -22,6 +18,7 @@
           
           <!-- Centered search form -->
           <form action="{% url "forum:search" %}" method="get" class="w-full max-w-md mx-auto">
+            {% csrf_token %}
             <div class="relative">
               <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none z-10">
                 <svg class="w-4 h-4 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" 
@@ -32,7 +29,7 @@
               </div>
               <input type="search" name="q" id="default-search"
                 class="block w-full pl-10 pr-24 py-2 text-sm text-gray-400 border border-gray-600 rounded-lg bg-gray-800/50 placeholder-gray-400 transition-all duration-200 hover:shadow-md hover:shadow-gray-500/50 focus:ring-1 focus:ring-gray-500/50 focus:outline-none"
-                placeholder="Search posts..." />
+                placeholder="Search posts..." / required>
               <button type="submit"
                 class="absolute right-1 bottom-1 text-gray-300 hover:text-white rounded-lg transition-all duration-200 px-2.5 py-1">
                 Search
@@ -57,8 +54,8 @@
       <div class="flex gap-6">
         <!-- Left Sidebar -->
         <aside class="w-64 bg-gray-800/50 p-4 hover:shadow-[0_10px_20px_rgba(250,250,250,0.2)] transition duration-300 ease-in-out">
-          <h3 class="text-lg font-medium text-gray-300 mb-3">Navigation</h3>
-          <ul class="space-y-2">
+          <h3 class="text-lg font-medium text-gray-300 mb-3 px-3">Navigation</h3>
+          <ul class="space-y-2 px-3">
             <li>
               <a href="{% url 'forum:post_feed' %}" class="block rounded-md px-3 py-2 text-sm text-gray-300 hover:bg-white/5 hover:text-white">Home</a>
             </li>
@@ -68,7 +65,7 @@
             </li>
             {% endif %}
             
-            {% if not user.is_authenticated %}
+            {% if not request.user.is_authenticated %}
               <li>
                 <a href="{% url "users:login" %}" class="block rounded-md px-3 py-2 text-sm text-gray-300 hover:bg-white/5 hover:text-white">Log In</a>
               </li>
@@ -86,10 +83,10 @@
           </ul>
 
           <div class="mt-6 pt-4 border-t border-white/10 ">
-            <h3 class="text-lg font-medium text-gray-300 mb-3">Trending</h3>
+            <h3 class="text-lg font-medium text-gray-300 mb-3 px-3">Trending</h3>
             {% get_most_popular_tags as tags %}
-              <div class="space-y-3">
-              <div class="text-sm text-gray-400">
+              <div class="space-y-3 px-3">
+              <div class="text-sm text-gray-400 px-3">
                 {% for tag in tags %}
                   <a class="font-medium text-gray-300 dark:hover:text-indigo-500 transition-colors break-all" href="{% url "forum:post_feed_by_slug" tag.slug %}">#{{ tag.name }}</a>
                   {% if tag|count_posts_tagged == 1 %}
@@ -110,10 +107,10 @@
 
         <!-- Right Sidebar -->
         <aside class="w-64 bg-gray-800/50 p-4 hover:shadow-[0_10px_20px_rgba(250,250,250,0.2)] transition duration-300 ease-in-out">
-          <h3 class="text-lg font-medium text-gray-300 mb-3">Most liked posts</h3>
+          <h3 class="text-lg font-medium text-gray-300 mb-3 px-3">Most liked posts</h3>
           {% get_most_liked_posts as posts %}
           <div class="space-y-3">
-            <div class="text-sm">
+            <div class="text-sm px-6">
               {% for post in posts %}
                 <a class="font-medium text-gray-300 dark:hover:text-indigo-500 transition-colors break-all" href="{{ post.get_absolute_url }}">{{ post.title }}</a>
                 {% if post|count_likes_post == 1 %}
@@ -126,10 +123,10 @@
           </div>
 
           <div class="mt-6 pt-4 border-t border-white/10">
-            <h3 class="text-lg font-medium text-gray-300 mb-3">Most commented posts</h3>
+            <h3 class="text-lg font-medium text-gray-300 mb-3 px-3">Most commented posts</h3>
           {% get_most_commented_posts as posts %}
           <div class="space-y-3">
-            <div class="text-sm">
+            <div class="text-sm px-6">
               {% for post in posts %}
                 <a class="font-medium text-gray-300 dark:hover:text-indigo-500 transition-colors break-all" href="{{ post.get_absolute_url }}">{{ post.title }}</a>
                 {% if post|count_comments_post == 1 %}
