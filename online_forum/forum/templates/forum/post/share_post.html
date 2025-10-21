@@ -6,7 +6,7 @@
   {% if sent %}
     <h2 class="mt-10 text-center text-2xl/9 font-bold tracking-tight text-white">Email has been successfully sent</h2>
   {% else %}
-    <h2 class="mt-10 text-center text-2xl/9 font-bold tracking-tight text-white">Share "{{ post.title }}" via Email</h2>
+    <h2 class="mt-10 text-center text-2xl/9 font-bold tracking-tight text-white break-all">Share "{{ post.title }}" via Email</h2>
     <div class="flex justify-center">
     <form class="max-w-sm w-full mt-4" method="post" action="{% url "forum:share_post" post.id %}">
       {% csrf_token %}
