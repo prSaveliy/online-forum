@@ -35,7 +35,7 @@ You can set up the project either **with Docker** or **manually**.
 
 ```bash
 git clone https://github.com/prSaveliy/online-forum.git
-cd online-forum
+cd online_forum
 ```
 
 2. **Create a .env in your root directory and set environment variables:**
@@ -77,7 +77,7 @@ docker-compose exec web python manage.py createsuperuser
 
 ```bash
 git clone https://github.com/prSaveliy/online-forum.git
-cd online-forum
+cd online_forum
 ```
 
 2. **Create a virtual environment and activate it:**
