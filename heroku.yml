@@ -3,5 +3,8 @@ build:
     web: Dockerfile
 
 run:
-  web: gunicorn online_forum.wsgi --log-file -
-  release: python manage.py migrate
+  web: gunicorn your_project_name.wsgi:application --log-file -
+  release:
+    image: web
+    command:
+      - python manage.py migrate
