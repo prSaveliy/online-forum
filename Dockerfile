@@ -18,4 +18,4 @@ COPY online_forum/ .
 
 # CMD ["python", "manage.py", "runserver","0.0.0.0:8000"]
 
-CMD gunicorn online_forum.wsgi.application --bind 0.0.0.0:$PORT
+CMD gunicorn online_forum.wsgi:application --bind 0.0.0.0:$PORT
