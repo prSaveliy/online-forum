@@ -16,7 +16,6 @@ import os
 
 from decouple import config
 
-import django_heroku
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -26,10 +25,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-o2t$$&o!zi6i9+0^w5ao!v72p3j9oqx*pyh9n1)zey!du1cpk%'
+SECRET_KEY = os.environ['SECRET_KEY']
 
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = os.environ['ALLOWED_HOSTS'].split(',')
 
 
 # Application definition
@@ -157,7 +156,3 @@ if os.environ.get('DEBUG') == 'TRUE':
     DEBUG = True
 elif os.environ.get('DEBUG') == 'FALSE':
     DEBUG = False
-
-
-# heroku settings
-django_heroku.settings(locals())
