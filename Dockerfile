@@ -14,8 +14,8 @@ RUN uv pip install -r requirements.txt --system
 
 COPY online_forum/ .
 
-# EXPOSE 8000
+EXPOSE 8000
 
-# CMD ["python", "manage.py", "runserver","0.0.0.0:8000"]
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
 
-CMD gunicorn online_forum.wsgi:application --bind 0.0.0.0:$PORT
+# CMD gunicorn online_forum.wsgi:application --bind 0.0.0.0:$PORT
