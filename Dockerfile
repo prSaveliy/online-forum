@@ -1,9 +1,10 @@
 FROM node:20 AS tailwind-builder
 
-WORKDIR /app
-
-COPY online_forum/theme/static_src/package*.json ./theme/static_src/
 WORKDIR /app/online_forum/theme/static_src
+
+RUN apt-get update && apt-get install -y build-essential
+
+COPY online_forum/theme/static_src/package*.json ./online-forum/theme/static_src/
 
 RUN npm install
 
