@@ -13,7 +13,6 @@ COPY . .
 
 WORKDIR /app/online_forum/theme/static_src
 RUN npm run build
-RUN npm run dev
 
 
 FROM python:3.12-slim-bookworm
