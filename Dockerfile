@@ -1,3 +1,19 @@
+FROM node:20 AS tailwind-builder
+
+WORKDIR /app
+
+COPY online_forum/theme/static_src/package*.json ./theme/static_src/
+WORKDIR /app/theme/static_src
+
+RUN npm install
+
+WORKDIR /app
+COPY . .
+
+WORKDIR /app/theme/static_src
+RUN npm run build
+
+
 FROM python:3.12-slim-bookworm
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
@@ -14,8 +30,12 @@ RUN uv pip install -r requirements.txt --system
 
 COPY online_forum/ .
 
-EXPOSE 8000
+COPY --from=tailwind-builder /app/theme/static_src/static/css ./theme/static_src/static/css
 
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+RUN python manage.py collectstatic --noinput
 
-# CMD gunicorn online_forum.wsgi:application --bind 0.0.0.0:$PORT
+# EXPOSE 8000
+
+# CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+
+CMD gunicorn online_forum.wsgi:application --bind 0.0.0.0:$PORT
