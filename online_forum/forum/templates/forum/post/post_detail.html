@@ -29,7 +29,7 @@
         <h6 class="h6 italic font-extralight dark:text-gray-50/30 mb-2 mt-1">
           <p><a class="dark:hover:text-indigo-500 transition-colors" href="{% url "forum:profile_page" post.user.id %}">{{ post.user }}</a> • {{ post|timepassed }}</p>
         </h6>
-          <p>{{ post.content|linebreaks }}</p>
+          <p class="text-white">{{ post.content|linebreaks }}</p>
       {% else %}
         <h6 class="h6 italic font-extralight dark:text-gray-50/30 mb-2">
           <p><a class="dark:hover:text-indigo-500 transition-colors" href="{% url "forum:profile_page" post.user.id %}">{{ post.user }}</a> • {{ post|timepassed }}</p>
