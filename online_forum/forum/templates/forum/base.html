@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="{% static 'style.css' %}">
   </head>
   <body class="bg-gray-900/50">
-    <nav class="relative bg-gray-800 after:pointer-events-none after:absolute after:inset-x-0 after:bottom-0 after:h-px after:bg-white/10">
+    <nav class="relative bg-gray-800/50 after:pointer-events-none after:absolute after:inset-x-0 after:bottom-0 after:h-px after:bg-white/10">
       <div class="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
         <div class="flex h-16 items-center justify-center">
           
@@ -74,7 +74,7 @@
 
       <div class="flex flex-col lg:flex-row gap-6">
         <!-- Left Sidebar -->
-        <aside class="hidden lg:block w-64 bg-gray-800 p-4 hover:shadow-[0_10px_20px_rgba(250,250,250,0.2)] transition duration-300 ease-in-out">
+        <aside class="hidden lg:block w-64 bg-gray-800/50 p-4 hover:shadow-[0_10px_20px_rgba(250,250,250,0.2)] transition duration-300 ease-in-out">
           <h3 class="text-lg font-medium text-gray-300 mb-3 px-3">Navigation</h3>
           <ul class="space-y-2 px-3">
             <li>
@@ -122,12 +122,12 @@
         </aside>
 
         <!-- Main Content -->
-        <div class="flex-1 w-full bg-gray-800 p-6 hover:shadow-[0_10px_20px_rgba(250,250,250,0.2)] transition duration-300 ease-in-out">
+        <div class="flex-1 w-full bg-gray-800/50 p-6 hover:shadow-[0_10px_20px_rgba(250,250,250,0.2)] transition duration-300 ease-in-out">
           {% block content %}{% endblock content %}
         </div>
 
         <!-- Right Sidebar -->
-        <aside class="hidden lg:block w-64 bg-gray-800 p-4 hover:shadow-[0_10px_20px_rgba(250,250,250,0.2)] transition duration-300 ease-in-out">
+        <aside class="hidden lg:block w-64 bg-gray-800/50 p-4 hover:shadow-[0_10px_20px_rgba(250,250,250,0.2)] transition duration-300 ease-in-out">
           <h3 class="text-lg font-medium text-gray-300 mb-3 px-3">Most liked posts</h3>
           {% get_most_liked_posts as posts %}
           <div class="space-y-3">
