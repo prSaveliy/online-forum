@@ -14,9 +14,6 @@ COPY . .
 WORKDIR /app/online_forum/theme/static_src
 RUN npm run build
 
-WORKDIR /app/online_forum/
-RUN python manage.py tailwind start
-
 
 FROM python:3.12-slim-bookworm
 
