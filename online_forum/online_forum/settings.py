@@ -55,7 +55,9 @@ INSTALLED_APPS = [
 ]
 
 TAILWIND_APP_NAME = 'theme'
-NPM_BIN_PATH = r"C:\Program Files\nodejs\npm.cmd"
+STATICFILES_DIRS = [
+    BASE_DIR / 'online_forum' / TAILWIND_APP_NAME / 'static',
+]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
