@@ -4,7 +4,7 @@ WORKDIR /app/online_forum/theme/static_src
 
 RUN apt-get update && apt-get install -y build-essential
 
-COPY online_forum/theme/static_src/package*.json ./online-forum/theme/static_src/
+COPY online_forum/theme/static_src/package*.json .
 
 RUN npm install
 
