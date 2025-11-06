@@ -33,7 +33,9 @@ COPY online_forum/ .
 
 COPY --from=tailwind-builder /app/online_forum/theme/static/css ./online_forum/theme/static/css
 
-RUN python manage.py collectstatic --noinput
+RUN --mount=type=secret,id=django_key \
+    SECRET_KEY=$(cat /run/secrets/django_key) \
+    python manage.py collectstatic --noinput
 
 # EXPOSE 8000
 
