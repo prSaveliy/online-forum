@@ -31,7 +31,7 @@ RUN uv pip install -r requirements.txt --system
 
 COPY online_forum/ .
 
-COPY --from=tailwind-builder /app/online_forum/theme/static_src/static/css ./theme/static_src/static/css
+COPY --from=tailwind-builder /app/online_forum/theme/static_src/static/css ./online-forum/theme/static_src/static/css
 
 RUN python manage.py collectstatic --noinput
 
