@@ -20,5 +20,6 @@ body {
 }
 
 .custom-bg-color {
-  background: rgba(17, 24, 39, 0.5);
+  background-color: rgb(17, 24, 39);
+  opacity: 0.5;
 }
