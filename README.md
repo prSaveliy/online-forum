@@ -50,6 +50,30 @@ POSTGRES_PORT=5432
 EMAIL_HOST_USER=your_email
 EMAIL_HOST_PASSWORD=your_gmail_app_password
 DEFAULT_FROM_EMAIL=forum <your_email>
+ALLOWED_HOSTS=localhost
+SECRET_KEY=your_secret_key
+```
+to get django secret key use third-party services to generate the key for you
+
+```bash
+# uncomment this databases setting in settings.py:
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.environ.get('POSTGRES_DB'),
+        'USER': os.environ.get('POSTGRES_USER'),
+        'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
+        'HOST': os.environ.get('DB_HOST'),
+        'PORT': os.environ.get('DB_PORT')
+    }
+}
+# and comment out this one:
+DATABASES = {
+    'default': dj_database_url.config(default=os.getenv('DATABASE_URL'), conn_max_age=600, ssl_require=True)
+}
+# also change npm_bin path if you chose custom installation path
+# or if you are not on Windows
+NPM_BIN_PATH = r"C:\Program Files\nodejs\npm.cmd"
 ```
 
 3. **Build and run Docker containers:**
@@ -108,6 +132,29 @@ POSTGRES_PORT=5432
 EMAIL_HOST_USER=your_email
 EMAIL_HOST_PASSWORD=your_gmail_app_password
 DEFAULT_FROM_EMAIL=forum <your_email>
+ALLOWED_HOSTS=localhost
+```
+to get django secret key use third-party services to generate the key for you
+
+```bash
+# uncomment this databases setting in settings.py:
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.environ.get('POSTGRES_DB'),
+        'USER': os.environ.get('POSTGRES_USER'),
+        'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
+        'HOST': os.environ.get('DB_HOST'),
+        'PORT': os.environ.get('DB_PORT')
+    }
+}
+# and comment out this one:
+DATABASES = {
+    'default': dj_database_url.config(default=os.getenv('DATABASE_URL'), conn_max_age=600, ssl_require=True)
+}
+# also change npm_bin path if you chose custom installation path
+# or if you are not on Windows
+NPM_BIN_PATH = r"C:\Program Files\nodejs\npm.cmd"
 ```
 
 5. **Apply Django migrations:**

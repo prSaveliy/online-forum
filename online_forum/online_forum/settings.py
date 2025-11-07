@@ -34,7 +34,9 @@ SECRET_KEY = os.environ.get("SECRET_KEY", "insecure-dummy-key-for-build-only")
 
 ALLOWED_HOSTS = [os.environ.get('ALLOWED_HOSTS')]
 CSRF_TRUSTED_ORIGINS = [
-    'https://*.herokuapp.com', 
+    'https://*.herokuapp.com',
+    'http://localhost',
+    'http://127.0.0.1', 
 ]
 
 
