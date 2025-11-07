@@ -23,6 +23,6 @@ body {
   background-color: rgb(17, 24, 39);
 }
 
-.bg-gray-900 {
-    --tw-bg-opacity: 1 !important;
+custom-bg-gray-900.bg-gray-900 {
+    --tw-bg-opacity: 1;
 }
