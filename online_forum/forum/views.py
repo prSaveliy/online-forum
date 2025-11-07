@@ -149,7 +149,7 @@ def share_post(request, post_id):
                 post.get_absolute_url()
             )
             subject = (
-                f'{request.user.username} recommends you check out "{post.title}" on Forum'
+                f'{request.user.username} ({cd['email']}) recommends you check out "{post.title}" on Forum'
             )
             message = (
                 f'Read and comment "{post.title}" on {post_url}\n\n'
