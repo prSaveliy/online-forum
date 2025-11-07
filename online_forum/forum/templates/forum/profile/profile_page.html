@@ -25,13 +25,13 @@
         <div class="flex items-center justify-between">
           {% if post.tags.all %}
             <h2 class="text-2xl font-bold mb-1">
-              <a href="{{ post.get_absolute_url }}" class="text-gray-900 dark:text-white mt-2 dark:hover:text-indigo-500 transition-colors">
+              <a href="{{ post.get_absolute_url }}" class="text-gray-900 dark:text-white mt-2 dark:hover:text-indigo-500 transition-colors break-all">
                 {{ post.title }}
               </a>
             </h2>
           {% else %}
             <h2 class="text-2xl font-bold">
-              <a href="{{ post.get_absolute_url }}" class="text-gray-900 dark:text-white mt-2 dark:hover:text-indigo-500 transition-colors ">
+              <a href="{{ post.get_absolute_url }}" class="text-gray-900 dark:text-white mt-2 dark:hover:text-indigo-500 transition-colors break-all">
                 {{ post.title }}
               </a>
             </h2>
