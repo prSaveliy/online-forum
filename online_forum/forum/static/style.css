@@ -20,5 +20,5 @@ body {
 }
 
 .custom-bg-color {
-  background: rgba(17, 24, 39);
+  background: rgba(17, 24, 39, 0.5);
 }
