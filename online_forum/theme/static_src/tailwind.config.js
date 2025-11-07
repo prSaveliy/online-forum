@@ -8,9 +8,6 @@ module.exports = {
 
     // JS inside your static_src folder
     './src/**/*.js',
-
-    // Optional: include Preline if you use it
-    './node_modules/preline/dist/*.js',
   ],
   theme: {
     extend: {

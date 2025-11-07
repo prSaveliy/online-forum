@@ -22,3 +22,8 @@ body {
 .custom-bg-color {
   background-color: rgb(17, 24, 39);
 }
+
+.bg-gray-900 {
+    --tw-bg-opacity: 1 !important;
+    background-color: rgb(17 24 39 / var(--tw-bg-opacity, 0.5)) !important;
+}
