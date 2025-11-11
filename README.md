@@ -133,6 +133,7 @@ EMAIL_HOST_USER=your_email
 EMAIL_HOST_PASSWORD=your_gmail_app_password
 DEFAULT_FROM_EMAIL=forum <your_email>
 ALLOWED_HOSTS=localhost
+SECRET_KEY=your_secret_key
 ```
 to get django secret key use third-party services to generate the key for you
 
